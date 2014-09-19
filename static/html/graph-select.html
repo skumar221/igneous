@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/ig.css" />
+  </head>
+  <body>
+    
+   
+      <div id="container1" class="ig-container container">
+	<div id="row1" class="row show-grid">
+	  <div id="ig-logo-container" class="ig-logo-container">
+	    <img id="ig-logo" class="ig-logo-image" src="/static/images/logos/igneous-logo.png"></img>
+	  </div>
+	</div>
+	
+	<div id="row2" class="row show-grid"></div>
+	<div id="row3" class="row show-grid">
+	  <div id="ig-graphsel-buttonholder" class="ig-graphsel-buttonholder">
+	  <button id="graphsel-button" class="ig-graphsel-button" type="button">View</button>
+	  </div>
+	</div>
+      </div>
+
+
+  </body>
+  <script>
+    $(document).ready(function () {
+
+	var selectedCount = 0;
+
+	function enableViewButton(){
+	    $('.ig-graphsel-button').prop("disabled", false);
+	}
+
+	function disableViewButton(){
+	    $('.ig-graphsel-button').prop("disabled", true);
+	}
+
+
+	/**
+	 * Method for when a graph selector is selected.
+	 * @param {Element | Object} graphElt The graph selector as an element
+	 *    or jQuery object.
+	 */
+	function onGraphSelectorSelected(graphSelector){
+	    $(graphSelector).data('selected', true);
+	    $(graphSelector).addClass("ig-selected");
+	    selectedCount++;
+	    enableViewButton();
+	}
+
+
+	/**
+	 * Method for when a graph selector is deselected.
+	 * @param {Element | Object} graphElt The graph selector as an element
+	 *    or jQuery object.
+	 */
+	function onGraphSelectorDeselected(graphSelector){
+	    $(graphSelector).data('selected', false);
+	    $(graphSelector).removeClass("ig-selected");
+	    selectedCount--;
+	    // Disable View Button if there are no selected
+	    if (selectedCount == 0) {
+		disableViewButton();
+	    }
+	}
+
+	//
+	// Apply bootstrap column stylings
+	//
+	$(".ig-logo-container").addClass("col-md-6 col-md-offset-3");
+	$("#row2").append($(".ig-graphholder"));
+	$(".ig-graphholder").addClass("col-sm-12 col-md-3 col-md-offset-0");
+	$(".ig-graphsel-buttonholder").addClass("col-md-6 col-md-offset-3");
+
+	//
+	// Disable View button by default
+	//
+	disableViewButton();
+
+	//
+	// Apply select stylings
+	//
+	$('.ig-graphsel').data('selected', false);
+	$('.ig-graphsel').click(function() {
+	    if ($(this).data('selected') === false){
+		onGraphSelectorSelected(this);
+	    } else {
+		onGraphSelectorDeselected(this);
+	    }
+	});
+
+
+	//
+	// View button click
+	//
+	$('.ig-graphsel-button').click(function() {
+	    var selector;
+	    var urlAppend = '?types=';
+	    $.each($('.ig-graphsel'), function(key, gs){
+		selector = $(gs);
+		if (selector.data("selected") === true){
+		    urlAppend += selector.attr('ig-query') + '&';
+		}
+	    })
+
+	    // Launch the graphs!!
+	    window.open({{.GraphDisplay}} + urlAppend.slice(0,-1), '_blank');
+	});		
+	
+    });
+    
+  </script>
+</html>
