@@ -91,28 +91,13 @@ func graphDataHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func graphDisplayHandler(w http.ResponseWriter, r *http.Request) {
-
-	r.ParseForm()
 	template.Must(template.ParseFiles(
 		STATIC_HTML_PATH + "graph-display.html")).Execute(w, nil);
-
-	/*
-	selectorParse, a := template.ParseFiles(STATIC_HTML_PATH + "graph.html");
-	for i := 0; i < len(Graphs); i++ {
-		for j := 0; j<len(graphTypes); j++ {
-			if (Graphs[i].Query == graphTypes[j]){
-				template.Must(selectorParse, a).Execute(w, Graphs[i])
-			}
-		}
-	}
-*/
-
 }
 
 
 
 func graphSelectHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Graph Select")
 	selectorParse, a := template.ParseFiles(
 		STATIC_HTML_PATH + "graph-selection.html");
 	template.Must(template.ParseFiles(

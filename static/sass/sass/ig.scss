@@ -7,7 +7,7 @@
     height: 170px;
 }
 
-@mixin ig-transitionable($dur: 0s, $timing: ease-out) {
+@mixin ig-transitionable($dur: .2s, $timing: ease-out) {
   -webkit-transition-duration: $dur;
   transition-duration: $dur;
   transition-timing-function: $timing; 
@@ -21,7 +21,13 @@
 html, body, .container {
     padding: 10px;
     height: 100%;
+
 }
+
+body {
+    @include bg-grad;
+}
+
 
 .margin-base-vertical {
     margin: 40px 0;
@@ -29,6 +35,25 @@ html, body, .container {
 
 
 
+.ig-logo-container{
+    positon: relative;
+    left: -10px;
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.ig-page-label{
+    @extend .ig-font;
+    position: relative;
+    background-color: transparent !important;
+    border: none !important;
+    font-size: 61px !important;
+    white-space: nowrap;
+    color: black;
+    padding: 0px;
+    top: 19px;
+    padding-left: 20px;
+}
 
 .ig-container {
 
@@ -41,29 +66,32 @@ html, body, .container {
 
 
 .ig-selected {
-    background-color: rgb(200,200,200);
-}
-
-.ig-graphsel-hoverable {
-
+    background-color: rgb(100,100,100) !important;
+    color: white !important;
+    box-shadow: 0px 0px 0px 5px black !important;
+    opacity: 1 !important;
 }
 
 .ig-graphholder {
     padding: 20px;
 }
 
+
+.ig-graphsel-hoverable {
+    @include ig-transitionable;
+    transition-property: background-color, box-shadow;
+}
+
+
 .ig-graphsel-hoverable:hover {
-    box-shadow: 0px 0px 0px 2px rgb(120,120,120);
+    background-color: rgb(200,200,200);
+    box-shadow: 0px 0px 0px 5px black;
 }
 
 
 .container [class^="col-"] {
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color: #eee;
-    border: 1px solid #ddd;
-    background-color: rgba(86,61,124,.15);
-    border: 1px solid rgba(86,61,124,.2);
 }
 
 
@@ -71,6 +99,7 @@ html, body, .container {
     @include ig-selectable-height;
     border-radius: 20px;
     cursor: pointer;
+    background-color: white;
     /*border: solid 3px black;*/
 }
 
@@ -113,7 +142,7 @@ html, body, .container {
 
 
 .ig-graphsel-button:hover {
-    background: rgb(140,140,140);
+    background-color: rgb(140,140,140);
 }
 
 
