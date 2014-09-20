@@ -2,23 +2,26 @@ package main
 
 import (
 	//"io/ioutil"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"text/template"
 	"strings"
 )
 
-
+const SP_QPREFIX = "kinds"
 const STATIC_PATH string = "./static/"
 const STATIC_HTML_PATH string = STATIC_PATH + "html/"
 const STATIC_IMAGE_PATH string = STATIC_PATH + "images/"
-const STATIC_ICON_PATH string = STATIC_IMAGE_PATH + "/icons/"
+const STATIC_ICON_PATH string = STATIC_IMAGE_PATH + "icons/"
 
 
 
 type AppUrlFragments struct {
-    GraphDisplay string
-    GraphSelect string
+    Display string
+    Select string
+    Data string
+    QueryPrefix string
 }
 
 
@@ -38,6 +41,7 @@ func create2dslice(dimensionX, dimensionY int) [][]int {
 	for i := 0; i < dimensionX; i++ { 
 		_2d[i] = make([]int, dimensionY)
 		_2d[i][0] = j
+		_2d[i][1] = j * 2
 		j++
 		
 	} 
@@ -45,28 +49,73 @@ func create2dslice(dimensionX, dimensionY int) [][]int {
 }
 
 
+type Response map[string]interface{}
+
+func graphDataHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	// We'll default to JSON for now...
+	w.Header().Set("Content-Type", "application/json")
+
+	// Make the graphs slice to send over as JSON
+	graphs := make([]Graph, 0, len(Graphs))
+
+	// If there's a query string, return on the the selected graphs,
+	// otherwise return all
+	//fmt.Println(r.URL.RawQuery)
+	//fmt.Println(strings.Contains(r.URL.RawQuery, SP_QPREFIX + "="))
+	if strings.Contains(r.URL.RawQuery, SP_QPREFIX + "=") {
+		graphTypes := strings.Split(r.URL.RawQuery[len(SP_QPREFIX + "="):], "&")
+		fmt.Println(graphTypes)
+		for i := 0; i < len(Graphs); i++ {
+			for j := 0; j<len(graphTypes); j++ {
+				if (Graphs[i].Query == graphTypes[j]){
+					graphs = append(graphs, Graphs[i])
+				}
+			}
+		}
+	} else {
+		for i := 0; i < len(Graphs); i++ {
+			graphs = append(graphs, Graphs[i])
+		}
+	}
+
+
+	// Marshal the json
+	json, _ := json.Marshal(graphs)
+
+	// Send the json over!
+	w.Write(json)
+}
+
 
 func graphDisplayHandler(w http.ResponseWriter, r *http.Request) {
-	graphTypes := strings.Split(r.URL.RawQuery[len("types="):], "&")
-	fmt.Println(graphTypes)
-	template.Must(template.ParseFiles(STATIC_HTML_PATH + "graph-display.html")).Execute(w, nil)
 
-	//selectorParse, a := template.ParseFiles(STATIC_HTML_PATH + "graph-display.html");
+	r.ParseForm()
+	template.Must(template.ParseFiles(
+		STATIC_HTML_PATH + "graph-display.html")).Execute(w, nil);
 
 	/*
-	template.Must(template.ParseFiles(STATIC_HTML_PATH + "graph-select.html")).Execute(w, nil)
+	selectorParse, a := template.ParseFiles(STATIC_HTML_PATH + "graph.html");
 	for i := 0; i < len(Graphs); i++ {
-		template.Must(selectorParse, a).Execute(w, Graphs[i])
+		for j := 0; j<len(graphTypes); j++ {
+			if (Graphs[i].Query == graphTypes[j]){
+				template.Must(selectorParse, a).Execute(w, Graphs[i])
+			}
+		}
 	}
 */
+
 }
 
 
 
 func graphSelectHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Graph Select")
-	selectorParse, a := template.ParseFiles(STATIC_HTML_PATH + "graph-selection.html");
-	template.Must(template.ParseFiles(STATIC_HTML_PATH + "graph-select.html")).Execute(w, AppUrlFrags)
+	selectorParse, a := template.ParseFiles(
+		STATIC_HTML_PATH + "graph-selection.html");
+	template.Must(template.ParseFiles(
+		STATIC_HTML_PATH + "graph-select.html")).Execute(w, AppUrlFrags);
 	for i := 0; i < len(Graphs); i++ {
 		template.Must(selectorParse, a).Execute(w, Graphs[i])
 	}
@@ -83,10 +132,10 @@ var networkGraph = &Graph{
 	Color: "rgb(240,240,0)"}
 var memoryGraph = &Graph{ 
 	Data: twoD, 
-	Query: "memory", 
+	Query: "memory",
 	Label: "Memory", 
 	IconSrc: STATIC_ICON_PATH[1:] + "memory.png", 
-	Color: "rgb(240,240,0)"}
+	Color: "rgb(150,240,200)"}
 var energyGraph = &Graph{ 
 	Data: twoD, 
 	Query: "energy", 
@@ -116,12 +165,13 @@ var Graphs = make([]Graph, 6)
 
 
 var AppUrlFrags = &AppUrlFragments{
-	GraphDisplay: "/graph-display/",
-	GraphSelect: "/graph-select/"}
+	Display: "/system-performance-display/",
+	Select: "/system-performance-select/",
+	Data: "/system-performance-data/",
+        QueryPrefix: SP_QPREFIX}
 
 
-func main() {
-
+func main() {	
 	Graphs[0] = * networkGraph
 	Graphs[1] = * memoryGraph
 	Graphs[2] = * energyGraph
@@ -129,10 +179,13 @@ func main() {
 	Graphs[4] = * diskCapacityGraph
 	Graphs[5] = * temperaturesGraph
 
+	http.HandleFunc(AppUrlFrags.Select, graphSelectHandler)
+	http.HandleFunc(AppUrlFrags.Display, graphDisplayHandler)
+	http.HandleFunc(AppUrlFrags.Data, graphDataHandler)
 
-	http.HandleFunc(AppUrlFrags.GraphSelect, graphSelectHandler)
-	http.HandleFunc(AppUrlFrags.GraphDisplay, graphDisplayHandler)
-
+	//
+	// Include the static path
+	//
 	http.Handle("/static/", http.StripPrefix("/static/", 
 		http.FileServer(http.Dir("static"))));
 	http.ListenAndServe (":8080", nil);

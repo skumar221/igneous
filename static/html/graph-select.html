@@ -98,7 +98,8 @@
 	//
 	$('.ig-graphsel-button').click(function() {
 	    var selector;
-	    var urlAppend = '?types=';
+	    var urlAppend = '?' + '{{.QueryPrefix}}' + '=';
+	    alert(urlAppend)
 	    $.each($('.ig-graphsel'), function(key, gs){
 		selector = $(gs);
 		if (selector.data("selected") === true){
@@ -107,9 +108,8 @@
 	    })
 
 	    // Launch the graphs!!
-	    window.open({{.GraphDisplay}} + urlAppend.slice(0,-1), '_blank');
+	    window.open({{.Display}} + urlAppend.slice(0,-1), '_blank');
 	});		
-	
     });
     
   </script>

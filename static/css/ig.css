@@ -16,33 +16,21 @@ html, body, .container {
 }
 
 /* line 43, ../sass/sass/ig.scss */
-.ig-graph {
-  border: solid 1px black;
-  height: 200px;
-  width: 300px;
-  overflow: hidden;
-  float: left;
-  margin: 20px;
-  border-radius: 10px;
-  background-color: white;
-}
-
-/* line 55, ../sass/sass/ig.scss */
 .ig-selected {
   background-color: #c8c8c8;
 }
 
-/* line 63, ../sass/sass/ig.scss */
+/* line 51, ../sass/sass/ig.scss */
 .ig-graphholder {
   padding: 20px;
 }
 
-/* line 67, ../sass/sass/ig.scss */
+/* line 55, ../sass/sass/ig.scss */
 .ig-graphsel-hoverable:hover {
   box-shadow: 0px 0px 0px 2px #787878;
 }
 
-/* line 72, ../sass/sass/ig.scss */
+/* line 60, ../sass/sass/ig.scss */
 .container [class^="col-"] {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -52,7 +40,7 @@ html, body, .container {
   border: 1px solid rgba(86, 61, 124, 0.2);
 }
 
-/* line 82, ../sass/sass/ig.scss */
+/* line 70, ../sass/sass/ig.scss */
 .ig-graphsel, .ig-empty, .ig-graphsel-button {
   height: 170px;
   border-radius: 20px;
@@ -60,7 +48,7 @@ html, body, .container {
   /*border: solid 3px black;*/
 }
 
-/* line 90, ../sass/sass/ig.scss */
+/* line 78, ../sass/sass/ig.scss */
 .ig-empty {
   font-weight: bold;
   font-size: 18px;
@@ -71,12 +59,12 @@ html, body, .container {
   cursor: auto;
 }
 
-/* line 103, ../sass/sass/ig.scss */
+/* line 91, ../sass/sass/ig.scss */
 .ig-graphsel-buttonholder {
   padding: 20px;
 }
 
-/* line 108, ../sass/sass/ig.scss */
+/* line 96, ../sass/sass/ig.scss */
 .ig-graphsel-button {
   font-weight: bold;
   font-size: 18px;
@@ -87,23 +75,23 @@ html, body, .container {
   width: 100%;
 }
 
-/* line 121, ../sass/sass/ig.scss */
+/* line 109, ../sass/sass/ig.scss */
 .ig-button-column {
   width: 50%;
   margin: 0 auto;
 }
 
-/* line 127, ../sass/sass/ig.scss */
+/* line 115, ../sass/sass/ig.scss */
 .ig-graphsel-button:hover {
   background: #8c8c8c;
 }
 
-/* line 133, ../sass/sass/ig.scss */
+/* line 121, ../sass/sass/ig.scss */
 .ig-graphsel:active, .ig-empty:active, .ig-graphsel-button:active {
   /*background-color: rgb(200,200,200);*/
 }
 
-/* line 137, ../sass/sass/ig.scss */
+/* line 125, ../sass/sass/ig.scss */
 .ig-graphsel-image {
   position: absolute;
   width: 100px;
@@ -112,7 +100,7 @@ html, body, .container {
   top: 35px;
 }
 
-/* line 147, ../sass/sass/ig.scss */
+/* line 135, ../sass/sass/ig.scss */
 .ig-graphsel-label {
   position: absolute;
   bottom: 25px;
@@ -124,180 +112,22 @@ html, body, .container {
   width: 100%;
 }
 
-/* line 159, ../sass/sass/ig.scss */
-.graph-container,
-.graph-container div,
-.graph-container a,
-.graph-container span {
-  margin: 0;
-  padding: 0;
-}
-
-/* line 168, ../sass/sass/ig.scss */
-.graph-container, #tooltip, .graph-info a {
-  background: #ffffff;
-  background: -moz-linear-gradient(top, #ffffff 0%, #f9f9f9 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #f9f9f9));
-  background: -webkit-linear-gradient(top, #ffffff 0%, #f9f9f9 100%);
-  background: -o-linear-gradient(top, #ffffff 0%, #f9f9f9 100%);
-  background: -ms-linear-gradient(top, #ffffff 0%, #f9f9f9 100%);
-  background: linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%);
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-
-/* line 183, ../sass/sass/ig.scss */
-.graph-container {
-  position: relative;
-  width: 90%;
-  height: 90%;
-  top: 5%;
-  left: 5%;
-  padding: 20px;
-  -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-/* line 196, ../sass/sass/ig.scss */
-.graph-container > div {
-  position: absolute;
-  width: inherit;
-  height: inherit;
-  top: 10px;
-  left: 25px;
-}
-
-/* line 204, ../sass/sass/ig.scss */
-.graph-info {
-  width: 90%;
-  margin-bottom: 10px;
-}
-
-/* line 210, ../sass/sass/ig.scss */
-graph-info a {
-  position: relative;
-  display: inline-block;
+/* line 149, ../sass/sass/ig.scss */
+.ig-graph {
+  border: solid 1px black;
+  height: 500px;
+  width: 100%;
+  overflow: hidden;
   float: left;
-  height: 20px;
-  padding: 7px 10px 5px 30px;
-  margin-right: 10px;
-  text-decoration: none;
-  cursor: default;
+  margin: 20px;
+  border-radius: 10px;
+  background-color: white;
 }
 
-/* line 222, ../sass/sass/ig.scss */
-.graph-info a:before {
+/* line 161, ../sass/sass/ig.scss */
+.ig-graph-lines, .ig-graph-lines-week, .ig-graph-lines-hour {
   position: absolute;
-  display: block;
-  content: '';
-  width: 8px;
-  height: 8px;
-  top: 13px;
-  left: 13px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-}
-
-/* line 235, ../sass/sass/ig.scss */
-.graph-info .visitors {
-  border-bottom: 2px solid #71c73e;
-}
-
-/* line 236, ../sass/sass/ig.scss */
-.graph-info .returning {
-  border-bottom: 2px solid #77b7c5;
-}
-
-/* line 238, ../sass/sass/ig.scss */
-.graph-info .visitors:before {
-  background: #71c73e;
-}
-
-/* line 239, ../sass/sass/ig.scss */
-.graph-info .returning:before {
-  background: #77b7c5;
-}
-
-/* Lines & Bars Buttons */
-/* line 243, ../sass/sass/ig.scss */
-#lines, #bars {
-  width: 34px;
-  height: 32px;
-  padding: 0;
-  margin-right: 0;
-  margin-left: 10px;
-  border-bottom: 2px solid #71c73e;
-  float: right;
-  cursor: pointer;
-}
-
-/* line 254, ../sass/sass/ig.scss */
-#lines.active, #bars.active {
-  background: #82d344;
-  background: -moz-linear-gradient(top, #82d344 0%, #71c73e 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #82d344), color-stop(100%, #71c73e));
-  background: -webkit-linear-gradient(top, #82d344 0%, #71c73e 100%);
-  background: -o-linear-gradient(top, #82d344 0%, #71c73e 100%);
-  background: -ms-linear-gradient(top, #82d344 0%, #71c73e 100%);
-  background: linear-gradient(to bottom, #82d344 0%, #71c73e 100%);
-}
-
-/* line 264, ../sass/sass/ig.scss */
-#lines span, #bars span {
-  display: block;
-  width: 34px;
-  height: 32px;
-  background: url("../img/lines.png") no-repeat 9px 12px;
-}
-
-/* line 271, ../sass/sass/ig.scss */
-#bars span {
-  background: url("../img/bars.png") no-repeat center 10px;
-}
-
-/* line 273, ../sass/sass/ig.scss */
-#lines.active span {
-  background-image: url("../img/lines_active.png");
-}
-
-/* line 276, ../sass/sass/ig.scss */
-.graph-info:before, .graph-info:after,
-.graph-container:before, .graph-container:after {
-  content: '';
-  display: block;
-  clear: both;
-}
-
-/* line 284, ../sass/sass/ig.scss */
-#tooltip, .graph-info a {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 20px;
-  color: #646464;
-}
-
-/* line 292, ../sass/sass/ig.scss */
-.tickLabel {
-  font-weight: bold;
-  font-size: 12px;
-  color: #666;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-/* line 300, ../sass/sass/ig.scss */
-.yAxis .tickLabel:first-child,
-.yAxis .tickLabel:last-child {
-  display: none;
-}
-
-/* line 303, ../sass/sass/ig.scss */
-#tooltip {
-  position: absolute;
-  display: none;
-  padding: 5px 10px;
-  border: 1px solid #e1e1e1;
+  top: 15%;
+  height: 80%;
+  width: 97%;
 }
