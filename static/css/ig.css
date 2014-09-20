@@ -10,7 +10,7 @@ html, body, .container {
 }
 
 /* line 37, ../sass/sass/ig.scss */
-.ig-font, .ig-graphsel-label {
+.ig-font, .ig-graphsel-label, .ig-graph-label, .ig-graph-togglebutton, .ig-graph-weeklybutton, .ig-graph-hourlybutton {
   font-size: 14px;
   font-family: 'Oxygen', sans-serif;
 }
@@ -114,7 +114,7 @@ html, body, .container {
 
 /* line 149, ../sass/sass/ig.scss */
 .ig-graph {
-  border: solid 1px black;
+  border: solid 3px gray;
   height: 500px;
   width: 100%;
   overflow: hidden;
@@ -130,4 +130,80 @@ html, body, .container {
   top: 15%;
   height: 80%;
   width: 97%;
+}
+
+/* line 179, ../sass/sass/ig.scss */
+.ig-graph-icon {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 15px;
+  left: 32px;
+  cursor: pointer;
+}
+
+/* line 189, ../sass/sass/ig.scss */
+.ig-graph-label {
+  font-size: 25px;
+  position: absolute;
+  top: 23px;
+  font-weight: bold;
+  left: 100px;
+}
+
+/* line 198, ../sass/sass/ig.scss */
+.ig-graph-togglebutton, .ig-graph-weeklybutton, .ig-graph-hourlybutton {
+  position: absolute;
+  overflow: hidden;
+  height: 30px;
+  width: 60px;
+  font-size: 12px;
+  top: 25px;
+  background-color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  border: solid 2px gray;
+}
+
+/* line 214, ../sass/sass/ig.scss */
+.ig-graph-togglebutton:hover, .ig-graph-weeklybutton:hover, .ig-graph-hourlybutton:hover {
+  border: solid 2px #646464;
+}
+
+/* line 219, ../sass/sass/ig.scss */
+.ig-graph-inactive {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* line 225, ../sass/sass/ig.scss */
+.ig-graph-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* line 231, ../sass/sass/ig.scss */
+.ig-graph-togglebutton-toggled {
+  background-color: gray;
+}
+
+/* line 235, ../sass/sass/ig.scss */
+.ig-graph-weeklybutton {
+  right: 20px;
+}
+
+/* line 240, ../sass/sass/ig.scss */
+.ig-graph-hourlybutton {
+  right: 100px;
+}
+
+/* line 245, ../sass/sass/ig.scss */
+.ig-color-indicator {
+  position: absolute;
+  bottom: -1px;
+  width: 100%;
+  height: 10px;
+  background-color: black;
 }

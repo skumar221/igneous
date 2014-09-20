@@ -147,7 +147,7 @@ html, body, .container {
 
 
 .ig-graph {
-    border: solid 1px black;
+    border: solid 3px gray;
     height: 500px;
     width: 100%;
     overflow: hidden;
@@ -173,4 +173,79 @@ html, body, .container {
 
 .ig-graph-lines-hour {
     @extend .ig-graph-lines;
+}
+
+
+.ig-graph-icon {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 15px;
+    left: 32px;
+    cursor: pointer;
+}
+
+
+.ig-graph-label {
+    @extend .ig-font;
+    font-size: 25px;
+    position: absolute;
+    top: 23px;
+    font-weight: bold;
+    left: 100px;
+}
+
+.ig-graph-togglebutton{
+    @extend .ig-font;
+    position: absolute;
+    overflow: hidden;
+    height: 30px;
+    width: 60px;
+    font-size: 12px;
+    top: 25px;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    border: solid 2px gray;
+}
+
+.ig-graph-togglebutton:hover{
+    border: solid 2px rgb(100,100,100);
+}
+
+
+.ig-graph-inactive {
+    opacity: 0;
+    visibility: hidden;
+}
+
+
+.ig-graph-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.ig-graph-togglebutton-toggled {
+    background-color: gray;
+}
+
+.ig-graph-weeklybutton {
+    @extend .ig-graph-togglebutton;
+    right: 20px;
+}
+
+.ig-graph-hourlybutton {
+    @extend .ig-graph-togglebutton;
+    right: 100px;
+}
+
+.ig-color-indicator {
+    position: absolute;
+    bottom: -1px;
+    width: 100%;
+    height: 10px;
+    background-color: black;
 }

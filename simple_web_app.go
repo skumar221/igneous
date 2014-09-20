@@ -26,7 +26,8 @@ type AppUrlFragments struct {
 
 
 type Graph struct {
-    Data [][]int
+    WeeklyData [][]int
+    HourlyData [][]int
     Query string
     Label string
     Color string
@@ -125,37 +126,42 @@ func graphSelectHandler(w http.ResponseWriter, r *http.Request) {
 
 var twoD = create2dslice(20, 2)
 var networkGraph = &Graph{ 
-	Data: twoD, 
+	WeeklyData: twoD, 
+	HourlyData: twoD, 
 	Query: "network", 
 	Label: "Network Traffic", 
 	IconSrc: STATIC_ICON_PATH[1:] + "network.png", 
 	Color: "rgb(240,240,0)"}
 var memoryGraph = &Graph{ 
-	Data: twoD, 
+	WeeklyData: twoD, 
+	HourlyData: twoD, 
 	Query: "memory",
 	Label: "Memory", 
 	IconSrc: STATIC_ICON_PATH[1:] + "memory.png", 
 	Color: "rgb(150,240,200)"}
 var energyGraph = &Graph{ 
-	Data: twoD, 
+	WeeklyData: twoD,
+	HourlyData: twoD,  
 	Query: "energy", 
 	Label: "Energy Consumption", 
 	IconSrc: STATIC_ICON_PATH[1:] + "energy.png", 
 	Color: "rgb(240,240,0)"}
 var cpuGraph = &Graph{ 
-	Data: twoD, 
+	WeeklyData: twoD, 
+	HourlyData: twoD, 
 	Query: "cpu", 
 	Label: "CPU", 
 	IconSrc: STATIC_ICON_PATH[1:] + "cpu.png", 
 	Color: "rgb(240,240,0)"}
 var diskCapacityGraph = &Graph{ 
-	Data: twoD, 
+	WeeklyData: twoD, 
 	Query: "disk", 
 	Label: "Disk Capacity", 
 	IconSrc: STATIC_ICON_PATH[1:] + "diskCapacity.png", 
 	Color: "rgb(240,240,0)"}
 var temperaturesGraph = &Graph{ 
-	Data: twoD, 
+	WeeklyData: twoD, 
+	HourlyData: twoD, 
 	Query: "temps", 
 	Label: "Temperatures", 
 	IconSrc: STATIC_ICON_PATH[1:] + "temperatures.png", 

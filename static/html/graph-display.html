@@ -23,28 +23,146 @@
   <script>
     $(document).ready(function () {
 
+
+	function swapFade(id1, id2){
+	    $(id2).css('opacity', 0);
+	    $(id1).slideToggle(300, function(){
+		$(id2).css('opacity', 1);
+		$(id2).slideToggle(300);
+	    });
+	}
+
+
+	// @return plot
+	function plotGraph(id, data){
+	    var plot = $.plot($(id), data, {
+		series: {
+		    points: {
+			show: true,
+			radius: 2
+		    },
+		    lines: {
+			show: true
+		    },
+		    shadowSize: 0
+		},
+		grid: {
+		    color: '#646464',
+		    borderWidth: 1,
+		    hoverable: true
+		},
+	    });
+	    
+	    var previousPoint = null;
+	    var tooltipId = "tooltip-" + id;
+	    
+	    $("<div id='" + tooltipId + "'></div>").css({
+		position: "absolute",
+		display: "none",
+		border: "1px solid #fdd",
+		padding: "2px",
+		"background-color": "#fee",
+		opacity: 0.80
+	    }).appendTo("body");
+	    
+	    $(id).bind('plothover', function (event, pos, item) {
+		if (item) {
+		    var x = item.datapoint[0].toFixed(2),
+		    y = item.datapoint[1].toFixed(2);
+		    $(tooltipId).html(item.series.label + " of " + x + " = " + y)
+			.css({top: item.pageY+5, left: item.pageX+5})
+			.fadeIn(200);
+		} else {
+		    $(tooltipId).hide();
+		}
+	    });
+
+	    return plot;
+	}
+
+	// @return plots
+	function plotGraphSet(ids, dataSet){
+	    var id;
+	    var data;
+	    var plots = [];
+	    $.each(ids, function(key, val){
+		id = val;
+		data = dataSet[key]
+		plots.push(plotGraph(id, data));
+	    })
+	    return plots
+	}
+
+
 	function createGraph(graphJson){
-	    window.console.log("APPENDING");
 	    var d = document.createElement('div');
 	    d.setAttribute("id", "graph-wrapper-" + graphJson.Query)
 	    $(d).addClass('ig-graph col-md-1').appendTo("#row2");
-	    /*
-	    $(d).html(//'<div class="graph-info">' + 
-		      //'<a href="javascript:void(0)" class="visitors ig-font">Hour</a>' +
-		      //'<a href="javascript:void(0)" class="returning ig-font">Week</a>' +
-		      //'<a href="#" id="bars"><span></span></a>' +
-		      //'<a href="#" id="lines" class="active"><span></span></a>' +
-		      //'</div>' +
-		      //'<div class="graph-container-' +  graphJson.Query + '">' +
-		      '<div id="ig-graph-lines-' +  graphJson.Query + '"></div>' +
-		      //'</div>')
-		      */
 
-	    $.each(['ig-graph-lines-week'], function(key, val){
-		jQuery('<div/>', {
+	    
+	    //
+	    // Graph children (graphs, labels, buttons)
+	    //
+	    var childElements = [
+		'ig-graph-lines-week',
+		'ig-graph-lines-hour',
+		'ig-graph-label',
+		'ig-graph-handle',
+		'ig-graph-weeklybutton',
+		'ig-graph-hourlybutton',
+		'ig-graph-icon',
+	    ]
+
+	    var eltType;
+	    $.each(childElements, function(key, val){
+		eltType = val.indexOf("button") > -1 ? "button" : "div";
+		eltType = val.indexOf("icon") > -1 ? "img" : "div";
+		jQuery('<' + eltType + '/>', {
 		    id: val + '-' +  graphJson.Query,
 		}).appendTo(d).addClass(val);		
 	    })
+
+	    $("#ig-graph-icon-" + graphJson.Query).attr('src', graphJson.IconSrc);
+
+	    var h = "#ig-graph-lines-hour-" + graphJson.Query;
+	    var w = "#ig-graph-lines-week-" + graphJson.Query;
+	    var hB = "#ig-graph-hourlybutton-" + graphJson.Query;
+	    var wB = "#ig-graph-weeklybutton-" + graphJson.Query;
+	    var l = "#ig-graph-label-" + graphJson.Query;
+
+	    $("#ig-graph-hourlybutton-" + graphJson.Query).html("Hour");
+	    $("#ig-graph-weeklybutton-" + graphJson.Query).html("Week");
+
+	    $("#ig-graph-hourlybutton-" + graphJson.Query).click(function(){
+		$(w).fadeOut(200, function(){
+		    $(h).fadeIn(200);
+		})
+		$(hB).addClass('ig-graph-togglebutton-toggled');
+		$(wB).removeClass('ig-graph-togglebutton-toggled');
+		$(l).html($(l).html().replace("Week", "Hour"));
+	    })
+
+	    $("#ig-graph-weeklybutton-" + graphJson.Query).click(function(){
+		$(h).fadeOut(200, function(){
+		    $(w).fadeIn(200);
+		})
+		$(wB).addClass('ig-graph-togglebutton-toggled');
+		$(hB).removeClass('ig-graph-togglebutton-toggled');
+		$(l).html($(l).html().replace("Hour", "Week"));
+	    })
+
+	    //$(hB).append('<div id="color-indicator-'+ graphJson.Query + '"></div>');
+
+	    jQuery('<div/>', {
+		id: 'color-indicator-hour-' +  graphJson.Query,
+	    }).appendTo(hB).addClass('ig-color-indicator');
+
+	    jQuery('<div/>', {
+		id: 'color-indicator-week-' +  graphJson.Query,
+	    }).appendTo(wB).addClass('ig-color-indicator');
+
+	    $(hB).trigger('click')
+	    $(l).html(graphJson.Label + " (Past Hour)");
 	    return $(d)
 	}
 
@@ -66,61 +184,30 @@
 	}
 
 	$.getJSON(jsonUrl, function( data ) {
+	    var i = 0;
 	    $.each(data, function(key, graphJson){
-
+		
 		graph = createGraph(graphJson);
-		var graphData = [{
-		    // Visits
-		    data: graphJson.Data,
-		    color: graphJson.Color
+		var weeklyData = [{
+		    data: graphJson.WeeklyData,
+		    color: i
 		}];
 
-		$.plot($("#ig-graph-lines-week-" + graphJson.Query), graphData, {
-		    series: {
-			points: {
-			    show: true,
-			    radius: 2
-			},
-			lines: {
-			    show: true
-			},
-			shadowSize: 0
-		    },
-		    grid: {
-			color: '#646464',
-			borderWidth: 1,
-			hoverable: true
-		    },
-		});
+		var hourlyData = [{
+		    data: graphJson.HourlyData,
+		    color: ++i
+		}];
 
+		var plots = plotGraphSet([
+		    "#ig-graph-lines-hour-" + graphJson.Query,
+		    "#ig-graph-lines-week-" + graphJson.Query,
+		], [weeklyData, hourlyData])
 
-		var previousPoint = null;
-		
-		$("<div id='tooltip'></div>").css({
-		    position: "absolute",
-		    display: "none",
-		    border: "1px solid #fdd",
-		    padding: "2px",
-		    "background-color": "#fee",
-		    opacity: 0.80
-		}).appendTo("body");
-
-
-		$("#ig-graph-lines-week-" + graphJson.Query).bind('plothover', function (event, pos, item) {
-		    if (item) {
-			var x = item.datapoint[0].toFixed(2),
-			y = item.datapoint[1].toFixed(2);
-			
-			$("#tooltip").html(item.series.label + " of " + x + " = " + y)
-			    .css({top: item.pageY+5, left: item.pageX+5})
-			    .fadeIn(200);
-		    } else {
-			$("#tooltip").hide();
-		    }
-		});
-
-
-		//$.plot($("#ig-graph-lines-hour-" + graphJson.Query), graphData);
+		$('#color-indicator-hour-' +  graphJson.Query).
+		    css({"background-color": plots[0].getData()[0].color});
+		$('#color-indicator-week-' +  graphJson.Query).
+		    css({"background-color": plots[1].getData()[0].color});
+		++i;
 	    })	    
 	});		
     });
