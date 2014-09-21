@@ -5,74 +5,55 @@
     <script src="/static/js/jquery.flot.time.min.js"></script>
     <script src="/static/js/jquery.flot.axislabels.js"></script>
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/ig.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/graph.css" />
   </head>
   <body>
+    {{.Header}}
   </body>
-  <script>
-
-    var Graphs = []
-    var Graph = function(wk, hr, label, query, unit, icon){
-	this.WeeklyData = wk;
-	this.HourlyData = hr;
-	this.Label = label;
-	this.Unit = unit;
-	this.Query = query;
-	this.IconSrc = icon;
-    }
-
-    var cDate = new Date().getTime();
-    var wk, hr, pt, tVal;
-
-    {{$graphs := . }}
-    {{ range $graphs }}
-
-        wk = [];
-        hr = [];
-
-        {{range $index, $element := .WeeklyData}}
-        pt = [];
-        tVal = 0;
-            {{range $ind, $ptVal := $element}}
-                if(tVal == 0){
-                   pt.push(cDate + {{$ptVal}})
-                } else {
-		   pt.push({{$ptVal}})
-                }
-                tVal++;
-            {{ end }}
-            wk.push(pt);
-        {{ end }}
-
-        {{range $index, $element := .HourlyData}}
-         pt = [];
-         tVal = 0;
-            {{range $ind, $ptVal := $element}}
-                if(tVal == 0){
-                   pt.push(cDate + {{$ptVal}})
-                } else {
-		   pt.push({{$ptVal}})
-                }
-                tVal++;
-            {{ end }}
-            hr.push(pt);
-        {{ end }}
-
-    Graphs.push(new Graph(wk, hr, "{{.Label}}", "{{.Query}}", "{{.Unit}}", "{{.IconSrc}}"))
-    {{ end }}
-
-
-    function swapFade(id1, id2){
-	$(id2).css('opacity', 0);
-	$(id1).slideToggle(300, function(){
-	    $(id2).css('opacity', 1);
-	    $(id2).slideToggle(300);
-	});
-    }
-
-    
+  <script>    
     $(document).ready(function () {
+	
+	// Page title
+	$('#ig-page-label-content').html("_system performance");
 
+	//
+	// Setup Graphs
+	//
+	var Graphs = [];
+	var Graph = function(wk, hr, label, query, unit, icon){
+	    this.WeeklyData = wk;
+	    this.HourlyData = hr;
+	    this.Label = label;
+	    this.Unit = unit;
+	    this.Query = query;
+	    this.IconSrc = icon;
+	}
+
+	//
+	// Populate graphs - templated for go
+	//
+	var cDate = new Date().getTime();
+	{{ $graphs := .Graphs }}{{ range $graphs }}
+	Graphs.push(new Graph(
+	    [{{range $index, $element := .WeeklyData}}[cDate +{{index $element 0}}, {{index $element 1}}],{{ end }}], 
+	    [{{range $index, $element := .HourlyData}}[cDate +{{index $element 0}}, {{index $element 1}}],{{ end }}], 
+	    "{{.Label}}", "{{.Query}}", "{{.Unit}}", "{{.IconSrc}}"));{{ end }}
+
+	
+	
+	/**
+	 * Fades out $(id1) for $(id2)
+	 * @param {Element | jQuery | string} selector1 The selector to fade out.
+	 * @param {Element | jQuery | string} selector2 The selector to fade in.
+	 */
+	function swapFade(selector1, selector2){
+	    $(selector2).css('opacity', 0);
+	    $(selector1).slideToggle(300, function(){
+		$(selector2).css('opacity', 1);
+		$(selector2).slideToggle(300);
+	    });
+	}
+	
 	// @return plot
 	function plotGraph(id, data, igGraph){
 	    id = '#' + id;
@@ -120,12 +101,12 @@
 		},
 	    });
 	    
-
+	    
 	    $(id + ' #yaxisLabel').text(igGraph.Label + " (" + igGraph.Unit + ")").css({
 		'left': -80
 	    });
-
-
+	    
+	    
 	    var previousPoint = null;    
 	    var tooltip = $("<div id='" + id.split('lines-')[1] + "'></div>").css({
 		position: "absolute",
@@ -151,37 +132,37 @@
 	    });
 	    return plot;
 	}
-
+	
 	// @return plots
 	function plotGraphSet(igGraph){
 	    var plots = [];
-	    plots.push(plotGraph("ig-graph-lines-hour-" + igGraph.Query, 
+	    plots.push(plotGraph("graph-lines-hour-" + igGraph.Query, 
 				 igGraph.HourlyData, igGraph));
-	    plots.push(plotGraph("ig-graph-lines-week-" + igGraph.Query, 
+	    plots.push(plotGraph("graph-lines-week-" + igGraph.Query, 
 				 igGraph.WeeklyData, igGraph));
 	    return plots
 	}
-
-
+	
+	
 	function createGraph(igGraph){
 	    var d = document.createElement('div');
 	    d.setAttribute("id", "graph-wrapper-" + igGraph.Query)
-	    $(d).addClass('ig-graph col-md-1').appendTo("#row2");
-
+	    $(d).addClass('graph col-md-1').appendTo("#row2");
+	    
 	    
 	    //
 	    // Graph children (graphs, labels, buttons)
 	    //
 	    var childElements = [
-		'ig-graph-lines-week',
-		'ig-graph-lines-hour',
-		'ig-graph-label',
-		'ig-graph-handle',
-		'ig-graph-weeklybutton',
-		'ig-graph-hourlybutton',
-		'ig-graph-icon',
+		'graph-lines-week',
+		'graph-lines-hour',
+		'graph-label',
+		'graph-handle',
+		'graph-weeklybutton',
+		'graph-hourlybutton',
+		'graph-icon',
 	    ]
-
+	    
 	    var eltType;
 	    $.each(childElements, function(key, val){
 		eltType = val.indexOf("button") > -1 ? "button" : "div";
@@ -190,60 +171,60 @@
 		    id: val + '-' +  igGraph.Query,
 		}).appendTo(d).addClass(val);		
 	    })
-
-	    $("#ig-graph-icon-" + igGraph.Query).attr('src', igGraph.IconSrc);
-
-	    var h = "#ig-graph-lines-hour-" + igGraph.Query;
-	    var w = "#ig-graph-lines-week-" + igGraph.Query;
-	    var hB = "#ig-graph-hourlybutton-" + igGraph.Query;
-	    var wB = "#ig-graph-weeklybutton-" + igGraph.Query;
-	    var l = "#ig-graph-label-" + igGraph.Query;
-
-	    $("#ig-graph-hourlybutton-" + igGraph.Query).html("Hour");
-	    $("#ig-graph-weeklybutton-" + igGraph.Query).html("Week");
-
-	    $("#ig-graph-hourlybutton-" + igGraph.Query).click(function(){
+		
+		$("#graph-icon-" + igGraph.Query).attr('src', igGraph.IconSrc);
+	    
+	    var h = "#graph-lines-hour-" + igGraph.Query;
+	    var w = "#graph-lines-week-" + igGraph.Query;
+	    var hB = "#graph-hourlybutton-" + igGraph.Query;
+	    var wB = "#graph-weeklybutton-" + igGraph.Query;
+	    var l = "#graph-label-" + igGraph.Query;
+	    
+	    $("#graph-hourlybutton-" + igGraph.Query).html("Hour");
+	    $("#graph-weeklybutton-" + igGraph.Query).html("Week");
+	    
+	    $("#graph-hourlybutton-" + igGraph.Query).click(function(){
 		$(w).fadeOut(200, function(){
 		    $(h).fadeIn(200);
 		})
-		$(hB).addClass('ig-graph-togglebutton-toggled');
-		$(wB).removeClass('ig-graph-togglebutton-toggled');
+		$(hB).addClass('graph-togglebutton-toggled');
+		$(wB).removeClass('graph-togglebutton-toggled');
 		$(l).html($(l).html().replace("Week", "Hour"));
 	    })
-
-	    $("#ig-graph-weeklybutton-" + igGraph.Query).click(function(){
+	    
+	    $("#graph-weeklybutton-" + igGraph.Query).click(function(){
 		$(h).fadeOut(200, function(){
 		    $(w).fadeIn(200);
 		})
-		$(wB).addClass('ig-graph-togglebutton-toggled');
-		$(hB).removeClass('ig-graph-togglebutton-toggled');
+		$(wB).addClass('graph-togglebutton-toggled');
+		$(hB).removeClass('graph-togglebutton-toggled');
 		$(l).html($(l).html().replace("Hour", "Week"));
 	    })
-
+	    
 	    //$(hB).append('<div id="color-indicator-'+ igGraph.Query + '"></div>');
-
+	    
 	    jQuery('<div/>', {
 		id: 'color-indicator-hour-' +  igGraph.Query,
-	    }).appendTo(hB).addClass('ig-color-indicator');
-
+	    }).appendTo(hB).addClass('color-indicator');
+	    
 	    jQuery('<div/>', {
 		id: 'color-indicator-week-' +  igGraph.Query,
-	    }).appendTo(wB).addClass('ig-color-indicator');
-
+	    }).appendTo(wB).addClass('color-indicator');
+	    
 	    $(hB).trigger('click')
 	    $(l).html(igGraph.Label + " (Past Hour)");
-
+	    
 	    return $(d)
 	}
-
-
+	
+	
 	function showTooltip(x, y, contents) {
 	    $('<div id="tooltip">' + contents + '</div>').css({
 		top: y - 16,
 		left: x + 20
 	    }).appendTo('body').fadeIn();
 	}
-
+	
 	var i = 0;
 	$.each(Graphs, function(key, igGraph){
 	    graph = createGraph(igGraph);
@@ -272,8 +253,10 @@
 	    $(graph).fadeOut(0);
 	    $(graph).fadeIn(1000);
 	})	    
-		
-    });
+	    
+	    });
+
+
     
   </script>
 </html>

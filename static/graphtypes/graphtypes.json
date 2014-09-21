@@ -38,7 +38,7 @@
 	"Unit": "Celcius",
 	"Query": "temperature", 
 	"Label": "Temperature", 
-	"IconSrc": "/static/images/icons/temperatures.png", 
+	"IconSrc": "/static/images/icons/temperature.png", 
 	"Color": "rgb(240,240,0)"
     }
 }

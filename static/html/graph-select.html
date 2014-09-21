@@ -2,28 +2,37 @@
   <head>
     <script src="/static/js/jquery-1.11.1.min.js"></script>
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/ig.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/graphsel.css" />
   </head>
   <body>
+    {{.Header}}
     <div id="row3" class="row"> 
-      <div id="ig-graphsel-buttonholder" class="ig-graphsel-buttonholder">
-	<button id="graphsel-button" class="ig-graphsel-button" type="button">View</button>
+      <div id="viewbuttonholder" class="viewbuttonholder">
+	<button id="viewbutton" class="viewbutton" type="button">View</button>
       </div> 
     </div>
+    {{.Selectors}}
   </body>
   <script>
     $(document).ready(function () {
 
-	$('#row3').appendTo($('#container1'))
-
-	var selectedCount = 0;
-
+	/**
+	 * Enable the view button.
+	 */
 	function enableViewButton(){
-	    $('.ig-graphsel-button').prop("disabled", false);
+	    $('.viewbutton').prop("disabled", false);
+	    $('.viewbutton').addClass("viewbutton-hoverable");
+	    $('.viewbutton').fadeTo(500, 1);
 	}
 
+
+	/**
+	 * disables the view button.
+	 */
 	function disableViewButton(){
-	    $('.ig-graphsel-button').prop("disabled", true);
+	    $('.viewbutton').prop("disabled", true);
+	    $('.viewbutton').removeClass("viewbutton-hoverable");
+	    $('.viewbutton').fadeTo(500, .3);
 	}
 
 
@@ -34,68 +43,101 @@
 	 */
 	function onGraphSelectorSelected(graphSelector){
 	    $(graphSelector).data('selected', true);
-	    $(graphSelector).addClass("ig-selected");
-	    selectedCount++;
+	    $(graphSelector).addClass("graphsel-selected");
 	    enableViewButton();
 	}
 
 
+
 	/**
 	 * Method for when a graph selector is deselected.
-	 * @param {Element | Object} graphElt The graph selector as an element
-	 *    or jQuery object.
+	 * @param {Element | jQuery | string} graphElt 
+	 *    The graph selector as an element or jQuery object.
 	 */
-	function onGraphSelectorDeselected(graphSelector){
-	    $(graphSelector).data('selected', false);
-	    $(graphSelector).removeClass("ig-selected");
-	    selectedCount--;
+	function onGraphSelectorDeselected(graphSel){
+	    $(graphSel).data('selected', false);
+	    $(graphSel).removeClass("graphsel-selected");
+
+	    //
 	    // Disable View Button if there are no selected
+	    //
+	    var selectedCount = 0;
+	    $.each($('.graphsel'), function(key, gs){
+		if ($(gs).data("selected") === true){
+		    selectedCount++;
+		}
+	    })
 	    if (selectedCount == 0) {
 		disableViewButton();
 	    }
 	}
 
 
-
-	//
-	// Add grapholders
-	//
-	$("#row2").append($(".ig-graphholder"));
-
-	//
-	// Disable View button by default
-	//
-	disableViewButton();
-
-	//
-	// Apply select stylings
-	//
-	$('.ig-graphsel').data('selected', false);
-	$('.ig-graphsel').click(function() {
-	    if ($(this).data('selected') === false){
-		onGraphSelectorSelected(this);
+	/**
+	 * Callback when a graphselector is selected.
+	 * @param {Element | jQuery | string} Graph selector element.
+	 */
+	function onGraphselClicked(graphSel) {
+	    if ($(graphSel).data('selected') === false){
+		onGraphSelectorSelected(graphSel);
 	    } else {
-		onGraphSelectorDeselected(this);
+		onGraphSelectorDeselected(graphSel);
 	    }
-	});
+	}
 
 
-	//
-	// View button click
-	//
-	$('.ig-graphsel-button').click(function() {
+	/**
+	 * Callback when the view button is clicked
+	 * @param {Element | jQuery | string} Graph selector element.
+	 */
+	function onViewButtonClicked(graphSel) {
 	    var selector;
 	    var urlAppend = '?' + '{{.QueryPrefix}}' + '=';
-	    $.each($('.ig-graphsel'), function(key, gs){
+	    $.each($('.graphsel'), function(key, gs){
 		selector = $(gs);
 		if (selector.data("selected") === true){
 		    urlAppend += selector.attr('ig-query') + '&';
+		    selector.trigger('click');
 		}
 	    })
-
 	    // Launch the graphs!!
-	    window.open({{.Display}} + urlAppend.slice(0,-1), '_blank');
-	});		
+	    window.open({{.DisplayUrl}} + 
+			urlAppend.slice(0,-1), '_blank');
+	}
+
+
+	//
+	// Init function
+	//
+	(function init(){
+	    // Disable View button by default
+	    $('.viewbutton').css('opacity', 0);
+	    disableViewButton();
+
+	    // Page title
+	    $('#ig-page-label-content').html("_performance");
+
+	    // Bind View button click
+	    $('.viewbutton').click(onViewButtonClicked);
+
+
+	    // Bind graphsel click
+	    $('.graphsel').click(function(){onGraphselClicked(this)}).fadeOut(0);
+
+	    $('.graphsel').each(function(i) {
+		$(this).delay((i++) * 100).fadeTo(500, 1); 
+	    })
+	    
+	    // Add grapholders
+	    $("#row2").append($(".graphsel-holder"));
+
+	    // Add row3 to container1
+	    $('#row3').appendTo($('#container1'));
+
+	    // Apply select stylings
+	    $('.graphsel').data('selected', false);
+	})()
+	
     });
     
   </script>

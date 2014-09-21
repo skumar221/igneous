@@ -1,0 +1,86 @@
+@import "igneous";
+
+.graphsel {
+    @include ig-selectable-height;
+    cursor: pointer;
+    background-color: white;
+    /*border: solid 3px black;*/
+}
+
+
+.graphsel-selected {
+    /*igneous branding orange -- too strong for this purpose*/
+    /*background-color: rgba(231,106,3, 1) !important;*/
+    background-color: rgba(255,187,84, 1) !important;
+    color: white !important;
+    box-shadow: 0px 0px 0px 5px black !important;
+    opacity: 1 !important;
+}
+
+.graphsel-holder {
+    padding: 20px;
+}
+
+
+.graphsel-hoverable {
+    @include ig-transitionable;
+    transition-property: background-color, box-shadow;
+}
+
+
+.graphsel-hoverable:hover {
+    background-color: rgb(200,200,200);
+    box-shadow: 0px 0px 0px 5px black;
+}
+
+
+.graphsel-image {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    left: calc(50% - 45px);
+    top: 35px;;
+}
+
+
+.graphsel-label {
+    @extend .ig-font;
+    position: absolute;
+    bottom: 25px;
+    color: rgb(70,70,70);
+    left: 0px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    width: 100%;
+}
+
+
+.viewbuttonholder {
+    padding: 20px;
+}
+
+
+.viewbutton {
+    @extend .graphsel;
+    @include default-margin;
+    font-weight: bold;
+    font-size: 18px;
+    color: white;
+    background: black;
+    border: none;
+    height: 40px;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+}
+
+
+.viewbutton-hoverable{
+    @include ig-transitionable;
+    transition-property: background-color;
+}
+
+.viewbutton-hoverable:hover {
+    background-color: rgb(30,30,30);
+}
