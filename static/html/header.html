@@ -1,0 +1,15 @@
+    
+<div id="container1" class="ig-container container">
+  <div id="row1" class="row">
+    <div id="ig-logo-container" class="col-md-3 ig-logo-container">
+      <img id="ig-logo" class="ig-logo-image" src="/static/images/logos/igneous-logo.png"></img>
+    </div>
+    <div id="ig-page-label" class="col-md-3 ig-page-label">
+      <div id="ig-page-label-content" class="ig-page-label-content">
+	{{range $index, $element := .}}{{$element}}
+	{{end}}
+      </div>
+    </div>
+  </div>	
+  <div id="row2" class="row"></div>
+</div>

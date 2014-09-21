@@ -1,7 +1,11 @@
 package main
 
 import (
-	//"io/ioutil"
+	"os"
+	"io"
+	"io/ioutil"
+	"strconv"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,12 +13,12 @@ import (
 	"strings"
 )
 
-const SP_QPREFIX = "kinds"
+
+const MAX_DATA_POINTS = 1000
+const SP_QPREFIX = "type"
 const STATIC_PATH string = "./static/"
 const STATIC_HTML_PATH string = STATIC_PATH + "html/"
-const STATIC_IMAGE_PATH string = STATIC_PATH + "images/"
-const STATIC_ICON_PATH string = STATIC_IMAGE_PATH + "icons/"
-
+var Graphs map[string]Graph
 
 
 type AppUrlFragments struct {
@@ -24,159 +28,210 @@ type AppUrlFragments struct {
     QueryPrefix string
 }
 
-
-type Graph struct {
-    WeeklyData [][]int
-    HourlyData [][]int
-    Query string
-    Label string
-    Color string
-    IconSrc string
-}
-
-
-
-func create2dslice(dimensionX, dimensionY int) [][]int { 
-	_2d := make([][]int, dimensionX) 
-	j := 0 
-	for i := 0; i < dimensionX; i++ { 
-		_2d[i] = make([]int, dimensionY)
-		_2d[i][0] = j
-		_2d[i][1] = j * 2
-		j++
-		
-	} 
-	return _2d
-}
-
-
-type Response map[string]interface{}
-
-func graphDataHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-
-	// We'll default to JSON for now...
-	w.Header().Set("Content-Type", "application/json")
-
-	// Make the graphs slice to send over as JSON
-	graphs := make([]Graph, 0, len(Graphs))
-
-	// If there's a query string, return on the the selected graphs,
-	// otherwise return all
-	//fmt.Println(r.URL.RawQuery)
-	//fmt.Println(strings.Contains(r.URL.RawQuery, SP_QPREFIX + "="))
-	if strings.Contains(r.URL.RawQuery, SP_QPREFIX + "=") {
-		graphTypes := strings.Split(r.URL.RawQuery[len(SP_QPREFIX + "="):], "&")
-		fmt.Println(graphTypes)
-		for i := 0; i < len(Graphs); i++ {
-			for j := 0; j<len(graphTypes); j++ {
-				if (Graphs[i].Query == graphTypes[j]){
-					graphs = append(graphs, Graphs[i])
-				}
-			}
-		}
-	} else {
-		for i := 0; i < len(Graphs); i++ {
-			graphs = append(graphs, Graphs[i])
-		}
-	}
-
-
-	// Marshal the json
-	json, _ := json.Marshal(graphs)
-
-	// Send the json over!
-	w.Write(json)
-}
-
-
-func graphDisplayHandler(w http.ResponseWriter, r *http.Request) {
-	template.Must(template.ParseFiles(
-		STATIC_HTML_PATH + "graph-display.html")).Execute(w, nil);
-}
-
-
-
-func graphSelectHandler(w http.ResponseWriter, r *http.Request) {
-	selectorParse, a := template.ParseFiles(
-		STATIC_HTML_PATH + "graph-selection.html");
-	template.Must(template.ParseFiles(
-		STATIC_HTML_PATH + "graph-select.html")).Execute(w, AppUrlFrags);
-	for i := 0; i < len(Graphs); i++ {
-		template.Must(selectorParse, a).Execute(w, Graphs[i])
-	}
-}
-
-
-
-var twoD = create2dslice(20, 2)
-var networkGraph = &Graph{ 
-	WeeklyData: twoD, 
-	HourlyData: twoD, 
-	Query: "network", 
-	Label: "Network Traffic", 
-	IconSrc: STATIC_ICON_PATH[1:] + "network.png", 
-	Color: "rgb(240,240,0)"}
-var memoryGraph = &Graph{ 
-	WeeklyData: twoD, 
-	HourlyData: twoD, 
-	Query: "memory",
-	Label: "Memory", 
-	IconSrc: STATIC_ICON_PATH[1:] + "memory.png", 
-	Color: "rgb(150,240,200)"}
-var energyGraph = &Graph{ 
-	WeeklyData: twoD,
-	HourlyData: twoD,  
-	Query: "energy", 
-	Label: "Energy Consumption", 
-	IconSrc: STATIC_ICON_PATH[1:] + "energy.png", 
-	Color: "rgb(240,240,0)"}
-var cpuGraph = &Graph{ 
-	WeeklyData: twoD, 
-	HourlyData: twoD, 
-	Query: "cpu", 
-	Label: "CPU", 
-	IconSrc: STATIC_ICON_PATH[1:] + "cpu.png", 
-	Color: "rgb(240,240,0)"}
-var diskCapacityGraph = &Graph{ 
-	WeeklyData: twoD, 
-	Query: "disk", 
-	Label: "Disk Capacity", 
-	IconSrc: STATIC_ICON_PATH[1:] + "diskCapacity.png", 
-	Color: "rgb(240,240,0)"}
-var temperaturesGraph = &Graph{ 
-	WeeklyData: twoD, 
-	HourlyData: twoD, 
-	Query: "temps", 
-	Label: "Temperatures", 
-	IconSrc: STATIC_ICON_PATH[1:] + "temperatures.png", 
-	Color: "rgb(240,240,0)"}
-var Graphs = make([]Graph, 6)
-
-
-
-var AppUrlFrags = &AppUrlFragments{
+var FRAGS = &AppUrlFragments{
 	Display: "/system-performance-display/",
 	Select: "/system-performance-select/",
 	Data: "/system-performance-data/",
         QueryPrefix: SP_QPREFIX}
 
 
-func main() {	
-	Graphs[0] = * networkGraph
-	Graphs[1] = * memoryGraph
-	Graphs[2] = * energyGraph
-	Graphs[3] = * cpuGraph
-	Graphs[4] = * diskCapacityGraph
-	Graphs[5] = * temperaturesGraph
+type Graph struct {
+    WeeklyData [][]float64
+    HourlyData [][]float64
+    Query string
+    Label string
+    Color string
+    IconSrc string
+    Unit string
+}
 
-	http.HandleFunc(AppUrlFrags.Select, graphSelectHandler)
-	http.HandleFunc(AppUrlFrags.Display, graphDisplayHandler)
-	http.HandleFunc(AppUrlFrags.Data, graphDataHandler)
 
-	//
+
+func graphDataHandler(w http.ResponseWriter, r *http.Request) {
+	// parse the request
+	r.ParseForm()
+
+	// We'll default to JSON for now...
+	w.Header().Set("Content-Type", "application/json")
+
+	// Get the graphs
+	graphs := graphsFromQuery(r.URL.RawQuery, true);
+
+	// Marshal the json
+	json, err := json.Marshal(graphs)
+	if err != nil {
+		fmt.Println(err)
+		return
+	} 
+	// Send the json over if good!
+	w.Write(json)
+}
+
+
+
+
+func populateDataPoints(graphs []Graph){
+	for k, _ := range graphs {
+		pref := "./static/data/" + graphs[k].Query
+		graphs[k].WeeklyData = csvToTwoD(pref + "-week.csv");
+		graphs[k].HourlyData = csvToTwoD(pref + "-hour.csv");
+	}	
+}
+
+
+func graphsFromQuery(queryStr string, populateData bool)[]Graph{
+	// Construct graphs slice
+	graphs := make([]Graph, 0, len(Graphs))
+	// Break apart query if it exists
+	if strings.Contains(queryStr, SP_QPREFIX + "=") {
+		graphTypes := strings.Split(queryStr[len(SP_QPREFIX + "="):], "&")
+		for j := 0; j<len(graphTypes); j++ {
+			if _,ok := Graphs[graphTypes[j]]; ok {
+				graphs = append(graphs, Graphs[graphTypes[j]])
+			}
+		}
+	// Otherwise use all graphs	
+	} else {
+		for _, v := range Graphs {
+			graphs = append(graphs, v)
+		}
+	}
+	// Populate the data, if specified
+	if populateData == true {
+		populateDataPoints(graphs)
+	}
+	return graphs
+}
+
+
+
+func graphDisplayHandler(w http.ResponseWriter, r *http.Request) {
+	// Get the graphs specified, populate data
+	graphs := graphsFromQuery(r.URL.RawQuery, true);
+	// Add displayer page
+	template.Must(template.ParseFiles(
+		STATIC_HTML_PATH + "graph-display.html")).Execute(w, graphs);
+	// Add header
+	template.Must(template.ParseFiles(
+		STATIC_HTML_PATH + "header.html")).
+			Execute(w, map[string]string{"Header": "_system performance"});
+}
+
+
+
+func graphSelectHandler(w http.ResponseWriter, r *http.Request) {
+	// Create the selector parser
+	selectorParse, a := template.ParseFiles(
+		STATIC_HTML_PATH + "graph-selection.html");
+	// Add graph selections
+	template.Must(template.ParseFiles(
+		STATIC_HTML_PATH + "graph-select.html")).Execute(w, FRAGS);
+
+	// Add header
+	template.Must(template.ParseFiles(
+		STATIC_HTML_PATH + "header.html")).
+			Execute(w, map[string]string{"Header": "_performance select"});
+	// Add graph selectors
+	for _,v := range Graphs {
+		template.Must(selectorParse, a).Execute(w, v)
+	}
+}
+
+
+
+func readFile(filename string)*os.File {
+	// Open the csv file
+	file, error := os.Open(filename)
+	if error != nil {
+		fmt.Println("Error:", error)
+		return nil
+	}
+	return file
+}
+
+
+func csvToTwoD(filename string) [][]float64 {
+
+	// The twod array
+	_2d := make([][]float64, 0, MAX_DATA_POINTS) 
+
+	// Read the csv, defer close
+	file := readFile(filename)
+	defer file.Close()
+
+	// parse the csv line by line...
+	reader := csv.NewReader(file)
+	reader.Comma = ','
+	lineCount := 0
+	for {
+		// read just one record, but we could ReadAll() as well
+		record, error := reader.Read()
+		// end-of-file is fitted into error
+		if error == io.EOF {
+			break
+		} else if error != nil {
+			fmt.Println("Error:", error)
+			return nil
+		}
+		// Populate array, skip csv header 	
+		if lineCount > 0 {
+			pt := make([]float64, 2)
+			val1, err1:= strconv.ParseFloat(record[0], 64)
+			val2, err2 := strconv.ParseFloat(record[1], 64)
+			if err1 == nil && err2 == nil {
+				pt[0] = val1;
+				pt[1] = val2;
+			}
+			_2d = append(_2d, pt);
+		}
+		lineCount += 1
+	}
+
+	return _2d;
+}
+
+
+
+func getGraphTypesFromJson(jsonFilename string)(map[string]Graph) {
+	// empty graph map
+	var Graphs = make(map[string]Graph)
+	// Read the json file
+	content, err := ioutil.ReadFile(jsonFilename)
+	if err!=nil{
+		fmt.Print("Error:",err)
+	}
+	// Begin the unmarshaling...
+	var data map[string]interface{}
+	json.Unmarshal(content, &data)
+	for _, v := range data {
+		// Continue unwrapping into individual graphs
+		strs := v.(map[string]interface{})
+		aG := Graph{} 
+		for k, a := range strs {
+			switch k {
+			case "Query": aG.Query = a.(string);
+			case "IconSrc": aG.IconSrc = a.(string);
+			case "Label": aG.Label = a.(string);
+			case "Color": aG.Color = a.(string);
+			case "Unit": aG.Unit = a.(string);	
+			}
+		}
+		Graphs[aG.Query] = aG;
+	}
+	return Graphs
+}
+
+
+
+
+func main() {
+	// Get the graph types
+	Graphs = getGraphTypesFromJson("./static/graphtypes/graphtypes.json")
+	// Handlers
+	http.HandleFunc(FRAGS.Select, graphSelectHandler)
+	http.HandleFunc(FRAGS.Display, graphDisplayHandler)
+	http.HandleFunc(FRAGS.Data, graphDataHandler)
 	// Include the static path
-	//
 	http.Handle("/static/", http.StripPrefix("/static/", 
 		http.FileServer(http.Dir("static"))));
 	http.ListenAndServe (":8080", nil);

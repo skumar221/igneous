@@ -1,0 +1,44 @@
+{
+    "network": { 
+	"Unit": "kb/s",
+	"Query": "network", 
+	"Label": "Network Traffic", 
+	"IconSrc": "/static/images/icons/network.png", 
+	"Color": "rgb(240,240,0)"
+    },
+    "memory": {  
+	"Unit": "gigabytes",
+	"Query": "memory",
+	"Label": "Memory Used", 
+	"IconSrc": "/static/images/icons/memory.png", 
+	"Color": "rgb(150,240,200)"
+    },
+    "energy": {   
+	"Unit": "watts",
+	"Query": "energy", 
+	"Label": "Energy Used", 
+	"IconSrc": "/static/images/icons/energy.png", 
+	"Color": "rgb(240,240,0)"
+    },
+    "cpu": { 
+	"Unit": "percent",
+	"Query": "cpu", 
+	"Label": "CPU", 
+	"IconSrc": "/static/images/icons/cpu.png", 
+	"Color": "rgb(240,240,0)"
+    },
+    "disk": { 
+	"Query": "disk", 
+	"Unit": "percent",
+	"Label": "Disk Capacity", 
+	"IconSrc": "/static/images/icons/diskCapacity.png", 
+	"Color": "rgb(240,240,0)"
+    },
+    "temperature": { 
+	"Unit": "Celcius",
+	"Query": "temperature", 
+	"Label": "Temperature", 
+	"IconSrc": "/static/images/icons/temperatures.png", 
+	"Color": "rgb(240,240,0)"
+    }
+}

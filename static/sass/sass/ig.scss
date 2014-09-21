@@ -19,13 +19,11 @@
 
 
 html, body, .container {
-    padding: 10px;
-    height: 100%;
 
 }
 
 body {
-    @include bg-grad;
+    background-color: rgb(79,77,78);
 }
 
 
@@ -42,17 +40,20 @@ body {
     border: none !important;
 }
 
-.ig-page-label{
+.ig-page-label {
     @extend .ig-font;
     position: relative;
-    background-color: transparent !important;
-    border: none !important;
-    font-size: 61px !important;
+    height: 116px;
+}
+
+.ig-page-label-content {
+    position: absolute;
+    bottom: 7px;
+    font-size: 43px !important;
+    font-weight: 300;
     white-space: nowrap;
-    color: black;
+    color: white;
     padding: 0px;
-    top: 19px;
-    padding-left: 20px;
 }
 
 .ig-container {
@@ -66,7 +67,7 @@ body {
 
 
 .ig-selected {
-    background-color: rgb(100,100,100) !important;
+    background-color: rgba(231,106,3, 1) !important;
     color: white !important;
     box-shadow: 0px 0px 0px 5px black !important;
     opacity: 1 !important;
@@ -97,7 +98,6 @@ body {
 
 .ig-graphsel {
     @include ig-selectable-height;
-    border-radius: 20px;
     cursor: pointer;
     background-color: white;
     /*border: solid 3px black;*/
@@ -181,8 +181,8 @@ body {
     width: 100%;
     overflow: hidden;
     float: left;
-    margin: 20px;
-    border-radius: 10px;
+    margin-bottom: 20px;
+    border-radius: 0px;
     background-color: white;
 }
 
@@ -190,8 +190,9 @@ body {
 .ig-graph-lines {
     position: absolute;
     top: 15%;
+    left: 5%;
     height: 80%;
-    width: 97%;
+    width: 90%;
 }
 
 
@@ -209,8 +210,8 @@ body {
     position: absolute;
     width: 50px;
     height: 50px;
-    top: 15px;
-    left: 32px;
+    top: 12px;
+    left: 12px;
     cursor: pointer;
 }
 
@@ -224,25 +225,7 @@ body {
     left: 100px;
 }
 
-.ig-graph-togglebutton{
-    @extend .ig-font;
-    position: absolute;
-    overflow: hidden;
-    height: 30px;
-    width: 60px;
-    font-size: 12px;
-    top: 25px;
-    background-color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    font-weight: bold;
-    border: solid 2px gray;
-}
 
-.ig-graph-togglebutton:hover{
-    border: solid 2px rgb(100,100,100);
-}
 
 
 .ig-graph-inactive {
@@ -257,18 +240,44 @@ body {
 }
 
 
+.ig-graph-togglebutton{
+    @extend .ig-font;
+    @include ig-transitionable;
+    transition-property: opacity, background-color, border;
+    position: absolute;
+    overflow: hidden;
+    height: 30px;
+    font-size: 12px;
+    top: 25px;
+    background-color: white;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    width: 80px;
+    border: solid 1px white;
+    opacity: .5;
+    padding: 2px;
+}
+
+.ig-graph-togglebutton:hover{
+    background-color: rgb(250,250,250);
+    opacity: 1;
+}
+
+
 .ig-graph-togglebutton-toggled {
-    background-color: gray;
+    background-color: rgb(220,220,220);
+    opacity: 1;
 }
 
 .ig-graph-weeklybutton {
     @extend .ig-graph-togglebutton;
-    right: 20px;
+    right: 5.5%;
 }
 
 .ig-graph-hourlybutton {
     @extend .ig-graph-togglebutton;
-    right: 100px;
+    right: calc(5.5% + 130px);
 }
 
 .ig-color-indicator {
@@ -277,4 +286,23 @@ body {
     width: 100%;
     height: 10px;
     background-color: black;
+}
+
+
+
+#yaxisLabel {
+/* Safari */
+-webkit-transform: rotate(-90deg);
+
+/* Firefox */
+-moz-transform: rotate(-90deg);
+
+/* IE */
+-ms-transform: rotate(-90deg);
+
+/* Opera */
+-o-transform: rotate(-90deg);
+
+/* Internet Explorer */
+filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
