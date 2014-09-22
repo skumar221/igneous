@@ -12,9 +12,10 @@
   </body>
   <script>    
     $(document).ready(function () {
-	
+
 	// Page title
-	$('#ig-page-label-content').html("_system performance");
+	$('#ig-page-label-content').html("_system performance").
+	    css({opacity:1}).fadeOut(0).fadeIn(200);
 
 	//
 	// Setup Graphs
@@ -81,7 +82,7 @@
 		series: {
 		    points: {
 			show: true,
-			radius: 2
+			radius: 0
 		    },
 		    lines: {
 			show: true
@@ -101,9 +102,9 @@
 		},
 	    });
 	    
-	    
+	    window.console.log($(id + ' #yaxisLabel').width());
 	    $(id + ' #yaxisLabel').text(igGraph.Label + " (" + igGraph.Unit + ")").css({
-		'left': -80
+		'left': -$(id + ' #yaxisLabel').width()/1.7
 	    });
 	    
 	    
@@ -124,7 +125,7 @@
 		    $(tooltip).html(new Date(parseInt(x)).toLocaleString() + 
 				    "<br>" + y)
 			.css({top: item.pageY+5, left: item.pageX+5, zIndex: 3})
-			.fadeIn(200);
+			.fadeIn(0);
 		    //window.console.log(document.getElementById(tooltipId));
 		} else {
 		    $(tooltip).hide();
@@ -222,7 +223,7 @@
 	    $('<div id="tooltip">' + contents + '</div>').css({
 		top: y - 16,
 		left: x + 20
-	    }).appendTo('body').fadeIn();
+	    }).appendTo('body').fadeIn(0);
 	}
 	
 	var i = 0;

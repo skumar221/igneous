@@ -12,8 +12,8 @@ body {
 .ig-logo-container {
   positon: relative;
   left: -10px;
-  background-color: transparent !important;
-  border: none !important;
+  background-color: transparent;
+  border: none;
 }
 
 /* line 43, ../sass/sass/igneous.scss */
@@ -26,26 +26,27 @@ body {
 .ig-page-label-content {
   position: absolute;
   bottom: 7px;
-  font-size: 43px !important;
+  font-size: 43px;
   font-weight: 300;
   white-space: nowrap;
   color: white;
   padding: 0px;
+  opacity: 0;
 }
 
-/* line 63, ../sass/sass/igneous.scss */
+/* line 64, ../sass/sass/igneous.scss */
 .ig-font, .ig-page-label, .ig-graph-label, .ig-graph-togglebutton, .ig-graph-weeklybutton, .ig-graph-hourlybutton, .graphsel-label {
   font-size: 14px;
   font-family: 'Oxygen', sans-serif;
 }
 
-/* line 71, ../sass/sass/igneous.scss */
+/* line 72, ../sass/sass/igneous.scss */
 .container [class^="col-"] {
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
-/* line 78, ../sass/sass/igneous.scss */
+/* line 79, ../sass/sass/igneous.scss */
 .ig-graph {
   border: solid 3px gray;
   height: 500px;
@@ -57,7 +58,7 @@ body {
   background-color: white;
 }
 
-/* line 90, ../sass/sass/igneous.scss */
+/* line 91, ../sass/sass/igneous.scss */
 .ig-graph-lines, .ig-graph-lines-week, .ig-graph-lines-hour {
   position: absolute;
   top: 15%;
@@ -66,7 +67,7 @@ body {
   width: 90%;
 }
 
-/* line 109, ../sass/sass/igneous.scss */
+/* line 110, ../sass/sass/igneous.scss */
 .ig-graph-icon {
   position: absolute;
   width: 50px;
@@ -76,7 +77,7 @@ body {
   cursor: pointer;
 }
 
-/* line 119, ../sass/sass/igneous.scss */
+/* line 120, ../sass/sass/igneous.scss */
 .ig-graph-label {
   font-size: 25px;
   position: absolute;
@@ -85,22 +86,22 @@ body {
   left: 100px;
 }
 
-/* line 131, ../sass/sass/igneous.scss */
+/* line 132, ../sass/sass/igneous.scss */
 .ig-graph-inactive {
   opacity: 0;
   visibility: hidden;
 }
 
-/* line 137, ../sass/sass/igneous.scss */
+/* line 138, ../sass/sass/igneous.scss */
 .ig-graph-active {
   opacity: 1;
   visibility: visible;
 }
 
-/* line 143, ../sass/sass/igneous.scss */
+/* line 144, ../sass/sass/igneous.scss */
 .ig-graph-togglebutton, .ig-graph-weeklybutton, .ig-graph-hourlybutton {
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
   transition-timing-function: ease-out;
   transition-property: opacity, background-color, border;
   position: absolute;
@@ -118,29 +119,29 @@ body {
   padding: 2px;
 }
 
-/* line 162, ../sass/sass/igneous.scss */
+/* line 163, ../sass/sass/igneous.scss */
 .ig-graph-togglebutton:hover, .ig-graph-weeklybutton:hover, .ig-graph-hourlybutton:hover {
   background-color: #fafafa;
   opacity: 1;
 }
 
-/* line 168, ../sass/sass/igneous.scss */
+/* line 169, ../sass/sass/igneous.scss */
 .ig-graph-togglebutton-toggled {
   background-color: gainsboro;
   opacity: 1;
 }
 
-/* line 173, ../sass/sass/igneous.scss */
+/* line 174, ../sass/sass/igneous.scss */
 .ig-graph-weeklybutton {
   right: 5.5%;
 }
 
-/* line 178, ../sass/sass/igneous.scss */
+/* line 179, ../sass/sass/igneous.scss */
 .ig-graph-hourlybutton {
   right: calc(5.5% + 130px);
 }
 
-/* line 183, ../sass/sass/igneous.scss */
+/* line 184, ../sass/sass/igneous.scss */
 .ig-color-indicator {
   position: absolute;
   bottom: -1px;
@@ -149,7 +150,7 @@ body {
   background-color: black;
 }
 
-/* line 193, ../sass/sass/igneous.scss */
+/* line 194, ../sass/sass/igneous.scss */
 #yaxisLabel {
   /* Safari */
   -webkit-transform: rotate(-90deg);
@@ -163,6 +164,12 @@ body {
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
 
+@media (max-width: 992px) {
+  /* line 214, ../sass/sass/igneous.scss */
+  .ig-page-label-content {
+    font-size: 60px;
+  }
+}
 /* line 3, ../sass/sass/graphsel.scss */
 .graphsel, .viewbutton {
   height: 170px;
@@ -177,7 +184,7 @@ body {
   /*background-color: rgba(231,106,3, 1) !important;*/
   background-color: #ffbb54 !important;
   color: white !important;
-  box-shadow: 0px 0px 0px 5px black !important;
+  /*box-shadow: 0px 0px 0px 5px rgb(50,50,50) !important;*/
   opacity: 1 !important;
 }
 
@@ -188,8 +195,8 @@ body {
 
 /* line 25, ../sass/sass/graphsel.scss */
 .graphsel-hoverable {
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
   transition-timing-function: ease-out;
   transition-property: background-color, box-shadow;
 }
@@ -197,7 +204,7 @@ body {
 /* line 31, ../sass/sass/graphsel.scss */
 .graphsel-hoverable:hover {
   background-color: #c8c8c8;
-  box-shadow: 0px 0px 0px 5px black;
+  /*box-shadow: 0px 0px 0px 5px black;*/
 }
 
 /* line 37, ../sass/sass/graphsel.scss */
@@ -239,15 +246,47 @@ body {
   outline: none;
 }
 
-/* line 79, ../sass/sass/graphsel.scss */
+@media (max-width: 992px) {
+  /* line 80, ../sass/sass/graphsel.scss */
+  .graphsel, .viewbutton {
+    height: 350px;
+    font-size: 70px;
+  }
+
+  /* line 84, ../sass/sass/graphsel.scss */
+  .viewbutton {
+    height: 150px;
+    font-size: 70px;
+  }
+
+  /* line 88, ../sass/sass/graphsel.scss */
+  .graphsel-label {
+    font-size: 60px;
+  }
+
+  /* line 91, ../sass/sass/graphsel.scss */
+  .graphsel-image {
+    position: absolute;
+    width: 230px;
+    height: 230px;
+    left: calc(50% - 115px);
+    top: 35px;
+  }
+}
+/* line 101, ../sass/sass/graphsel.scss */
 .viewbutton-hoverable {
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
   transition-timing-function: ease-out;
   transition-property: background-color;
 }
 
-/* line 84, ../sass/sass/graphsel.scss */
+/* line 106, ../sass/sass/graphsel.scss */
 .viewbutton-hoverable:hover {
   background-color: #1e1e1e;
+}
+
+/* line 110, ../sass/sass/graphsel.scss */
+.viewbutton-hoverable:active {
+  background-color: #464646;
 }

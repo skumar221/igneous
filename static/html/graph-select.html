@@ -8,7 +8,7 @@
     {{.Header}}
     <div id="row3" class="row"> 
       <div id="viewbuttonholder" class="viewbuttonholder">
-	<button id="viewbutton" class="viewbutton" type="button">View</button>
+	<button id="viewbutton" class="viewbutton" type="button">View Graphs</button>
       </div> 
     </div>
     {{.Selectors}}
@@ -115,7 +115,8 @@
 	    disableViewButton();
 
 	    // Page title
-	    $('#ig-page-label-content').html("_performance");
+	    $('#ig-page-label-content').html("_performance").
+		css({opacity:1}).fadeOut(0).fadeIn(1);
 
 	    // Bind View button click
 	    $('.viewbutton').click(onViewButtonClicked);

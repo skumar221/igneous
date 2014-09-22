@@ -31,7 +31,7 @@ type Graph struct {
 
 
 func (app * App) Init(){
-	app.MaxDataPoints = 1000
+	app.MaxDataPoints = 20000
 	app.Graphs = app.graphsFromJson(app.GraphConfig);
 }
 
@@ -49,29 +49,46 @@ func (app App) PopulateData(graphs []Graph){
 }
 
 
+
+func (app App) getSortedGraphIds()([]string){
+	// Sort the keys
+	var keys []string
+	for k, _ := range app.Graphs {
+		keys = append(keys, k)
+	}
+	return util.SortStringArray(keys)
+}
+
+
+
 //
 // Gets graphs
 //
 func (app App) GetGraphs()([]Graph) {
+	// Sort the keys
+	keys := app.getSortedGraphIds()
+
+	// Return the graphs
 	graphs := make([]Graph, 0, len(app.Graphs))
-	for _, v := range app.Graphs {
-		graphs = append(graphs, v)
+	for _, key := range keys {
+		graphs = append(graphs, app.Graphs[key])
 	}
 	return graphs
 }
 
 
 //
-// Gets graphs
+// Gets graphs by provided ids
 //
-func (app App) GetGraphsById(qStrs []string)([]Graph) {
+func (app App) GetGraphsById(keys []string)([]Graph) {
 	graphs := make([]Graph, 0, len(app.Graphs))
-	if len(qStrs) == 0 {
+	if len(keys) == 0 {
 		graphs = app.GetGraphs()
-	} else {		
-		for j := 0; j<len(qStrs); j++ {
-			if _, ok := app.Graphs[qStrs[j]]; ok {
-				graphs = append(graphs, app.Graphs[qStrs[j]])
+	} else {	
+		keys := util.SortStringArray(keys)
+		for _, key := range keys{
+			if _, ok := app.Graphs[key]; ok {
+				graphs = append(graphs, app.Graphs[key])
 			}
 		}
 	}

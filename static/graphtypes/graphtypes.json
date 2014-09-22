@@ -14,7 +14,7 @@
 	"Color": "rgb(150,240,200)"
     },
     "energy": {   
-	"Unit": "watts",
+	"Unit": "kWh hundreds",
 	"Query": "energy", 
 	"Label": "Energy Used", 
 	"IconSrc": "/static/images/icons/energy.png", 

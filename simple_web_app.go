@@ -23,7 +23,8 @@ func dataHandler(w http.ResponseWriter, r *http.Request, App app.App, Urls Urls)
 	w.Header().Set("Content-Type", "application/json")
 
 	// Get the graphs
-	graphs := App.GetGraphsById(util.SplitQuery(Urls.QueryPrefix, r.URL.RawQuery));
+	graphs := App.GetGraphsById(util.SplitQuery(
+		Urls.QueryPrefix, r.URL.RawQuery));
 
 	// Populate the data
 	App.PopulateData(graphs)
@@ -72,7 +73,7 @@ func selectHandler(w http.ResponseWriter, r *http.Request, App app.App, Urls Url
 
 	// Put selector html in a string
 	var selectors bytes.Buffer 
-	for _, graph := range App.Graphs {
+	for _, graph := range App.GetGraphs() {
 		err := selTemplate.Execute(&selectors, graph)
 		if err != nil{
 			fmt.Println(err);

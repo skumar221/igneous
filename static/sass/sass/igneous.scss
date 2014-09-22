@@ -7,7 +7,7 @@
     height: 170px;
 }
 
-@mixin ig-transitionable($dur: .2s, $timing: ease-out) {
+@mixin ig-transitionable($dur: .1s, $timing: ease-out) {
   -webkit-transition-duration: $dur;
   transition-duration: $dur;
   transition-timing-function: $timing; 
@@ -36,8 +36,8 @@ body {
 .ig-logo-container{
     positon: relative;
     left: -10px;
-    background-color: transparent !important;
-    border: none !important;
+    background-color: transparent;
+    border: none;
 }
 
 .ig-page-label {
@@ -49,11 +49,12 @@ body {
 .ig-page-label-content {
     position: absolute;
     bottom: 7px;
-    font-size: 43px !important;
+    font-size: 43px;
     font-weight: 300;
     white-space: nowrap;
     color: white;
     padding: 0px;
+    opacity: 0;
 }
 
 .ig-container {
@@ -205,4 +206,12 @@ body {
 
 /* Internet Explorer */
 filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+
+
+@media (max-width: 992px) {
+  .ig-page-label-content {
+    font-size: 60px;
+  }
 }

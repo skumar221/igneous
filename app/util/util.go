@@ -12,7 +12,20 @@ import (
 	"encoding/csv"
 	"strconv"
 	"strings"
+	"sort"
 )
+
+
+
+func SortStringArray(strs []string)[]string{
+	// Sort the keys
+	var keys []string
+	for _, k := range strs {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
 
 
 func SplitQuery(prefix string, queryStr string)[]string{
