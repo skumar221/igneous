@@ -121,9 +121,9 @@ func main() {
 
 	// Set urls
 	urls := Urls{
-		Display: "/system-performance-display/",
-		Select: "/system-performance-select/",
-		Data: "/system-performance-data/",
+		Display: "/display/",
+		Select: "/select/",
+		Data: "/data/",
 		Html: "./static/html/",
 		QueryPrefix: "type"}
 
